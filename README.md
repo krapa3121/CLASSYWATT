@@ -1,100 +1,131 @@
-# Smart Classroom Automation & Energy Optimization — DSU Code Clash 2.0
+# CLASSYWATT ⚡
+### Smart Classroom Automation & Energy Optimization — DSU Code Clash 2.0
 
-A beginner-friendly Streamlit prototype for exactly three classrooms. Each room is configured with **2 fans, 1 AC, 1 light, and 1 projection screen**.
+**Smarter Classrooms. Greener Futures.**
+
+CLASSYWATT is a Python-based Smart Classroom Automation and Energy Optimization system designed to monitor classroom occupancy, track room capacity, and optimize energy usage through intelligent control logic. It features an interactive Streamlit dashboard, computer-vision-based occupancy detection, equipment control simulation, and energy-saving analytics.
 
 ## Features
-- Occupancy simulator or one-frame OpenCV HOG person detection from a local camera, video file, or authorized CCTV stream.
-- Capacity and available-seat dashboard.
-- Daylight lux simulator and brightness compensation.
-- Projection mode with dim/OFF option and simulated screen status.
-- Fan/AC interlock; HVAC is OFF when occupancy is zero.
-- Manual light and HVAC overrides.
-- Configurable power ratings, kWh/cost estimates, weekly demo charts and CSV export.
-- Rule-based energy recommendations and unit tests.
 
-## Important prototype limitations
-- **Simulation only:** no physical device is controlled. A compatible controller (e.g. a supported relay/IoT gateway) and explicit integration code are required before real-world actuation.
-- OpenCV's built-in HOG detector is a basic baseline, not production-grade people counting. It reads one frame per Streamlit rerun and may miss people or double-count detections. Test only with an authorized source.
-- The five-minute empty-room delay is shown as a configurable policy but does not persist a real timer between reruns in this starter prototype. Add persistent state/scheduler before deploying.
-- Lux is simulated; no actual sensor is queried.
-- Weekly charts use illustrative demo data, not measured readings. The recommendation engine is rule-based rather than a trained AI model.
-- A live CCTV URL may require authentication, network access, a supported codec, and permission from your institution.
+- **Occupancy monitoring:** Simulated occupancy or OpenCV HOG person detection using a local camera, video file, or authorized CCTV stream.
+- **Capacity monitoring:** Displays occupancy, available seats, and capacity alerts.
+- **Smart lighting:** Simulates occupancy-based lighting and daylight brightness compensation.
+- **Equipment management:** Simulates fan, AC, light, and projection-screen status.
+- **Energy optimization:** Estimates energy consumption, electricity costs, and potential savings.
+- **Energy recommendations:** Rule-based suggestions for reducing unnecessary electricity usage.
+- **Interactive dashboard:** Built with Streamlit, with configurable power ratings and electricity tariffs.
+- **Reports and testing:** Demo charts, CSV export, and unit tests.
 
-## Folder structure
+## Technology Stack
+
+- Python 3.11
+- Streamlit
+- OpenCV
+- NumPy
+- Pandas
+- Unittest
+
+## Project Structure
+
 ```text
 smart_classroom_automation/
 ├── app.py
 ├── requirements.txt
 ├── README.md
 ├── backend/
+│   ├── __init__.py
 │   ├── config.py
-│   ├── occupancy.py
 │   ├── control.py
 │   ├── energy.py
+│   ├── occupancy.py
 │   └── recommendations.py
 ├── frontend/
+│   ├── __init__.py
 │   └── ui.py
 └── tests/
     └── test_control.py
 ```
 
-## Windows setup using Anaconda Prompt
-1. Extract the ZIP to a folder such as `Desktop\smart_classroom_automation`.
-2. Open **Anaconda Prompt** and move into the extracted folder. Example:
-   ```bat
-   cd %USERPROFILE%\Desktop\smart_classroom_automation
-   ```
-3. Create an environment (Python 3.11 is recommended):
-   ```bat
-   conda create -n smartclass python=3.11 -y
-   conda activate smartclass
-   ```
-   If you already have an environment with a supported Python version, activate it instead.
-4. Install dependencies:
-   ```bat
-   python -m pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-5. Run the website:
-   ```bat
-   streamlit run app.py
-   ```
-6. A browser tab should open. If not, copy the local URL shown in the terminal (usually `http://localhost:8501`).
+## Installation and Setup (Windows)
 
-## Connect VS Code
-1. Open VS Code → **File → Open Folder** → select this project folder.
-2. Install the Microsoft **Python** extension and **Streamlit** extension if desired.
-3. Press `Ctrl+Shift+P` → `Python: Select Interpreter` → choose the `smartclass` environment.
-4. Open VS Code Terminal and run `streamlit run app.py`.
+### 1. Clone the repository
 
-## Use a camera/video
-- First use the **Simulator** source to confirm the dashboard works.
-- Switch Occupancy source to **Camera / video**.
-- For a local webcam, leave source blank and use camera index `0`.
-- For a video file, paste its full local path into the source box.
-- For CCTV, paste an authorized stream URL only if your institution permits it. Do not expose credentials in screenshots or commit them to Git.
-- HOG counting runs on one frame per rerun; use a dedicated continuous video pipeline/tracker for production.
+```bash
+git clone https://github.com/krapa3121/CLASSYWATT.git
+cd CLASSYWATT
+```
 
-## Test the logic
+Alternatively, open your existing project folder in VS Code.
+
+### 2. Create a Python environment
+
+Using Anaconda Prompt:
+
+```bash
+conda create -n smartclass python=3.11 -y
+conda activate smartclass
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. Run the application
+
+```bash
+streamlit run app.py
+```
+
+Open the local URL displayed in your terminal, usually `http://localhost:8501`.
+
+## Camera and Video Usage
+
+1. Start with the simulator to verify the dashboard.
+2. Select the camera or video occupancy source.
+3. For a local webcam, use camera index `0` if supported.
+4. For video files or CCTV, use an accessible source and follow your institution's authorization and privacy rules.
+
+Camera support depends on the source, network, authentication, and supported video formats.
+
+## Run Tests
+
 From the project root:
-```bat
+
+```bash
 python -m unittest discover -s tests -v
 ```
 
-## Test checklist
-1. Occupancy and capacity: set simulated people above room capacity and confirm alert.
-2. Lighting: set occupancy > 0; confirm light policy is active. Set occupancy 0; light and HVAC go off in the current prototype.
-3. Fan/AC: choose Fan, then AC; confirm only one mode is ON. At occupancy 0, HVAC is OFF.
-4. Daylight: change lux from 0 to 1500 and observe brightness estimate.
-5. Projection: toggle projection and compare Dim versus OFF. HVAC mode remains governed by the selected fan/AC policy.
-6. Camera failure: choose Camera / video with an invalid source and confirm a warning rather than a false success.
-7. Energy and weekly report: change power ratings/tariff and confirm the current estimate changes; weekly demo report remains illustrative until connected to logged data.
+## Suggested Hackathon Demonstration
 
-## Suggested hackathon demo flow
-1. Show Classroom A at 18/60 occupancy.
-2. Increase occupancy above capacity and show the alert.
-3. Raise daylight lux and show brightness compensation.
-4. Toggle projection mode and show lighting/screen status.
-5. Switch HVAC between Fan and AC and show interlock.
-6. Set occupancy to zero and show lights/HVAC off.
-7. Show weekly baseline vs optimized energy and cost charts, clearly stating the weekly values are demo data.
+1. Show a classroom with simulated occupancy.
+2. Increase occupancy beyond room capacity and demonstrate the alert.
+3. Change simulated daylight levels and observe brightness compensation.
+4. Toggle projection and HVAC modes.
+5. Set occupancy to zero and demonstrate the equipment control policy.
+6. Display energy and cost estimates.
+7. Explain how occupancy-based automation can reduce unnecessary energy consumption.
+
+## Important Prototype Limitations
+
+- **Hardware control is simulated:** Physical lights, fans, AC units, and projection screens are not controlled without compatible hardware and implemented integrations.
+- **Basic computer vision:** OpenCV HOG detection is a baseline and may miss people or produce inaccurate counts.
+- **Simulated sensor values:** Daylight readings and demonstration energy reports are not actual sensor or meter readings.
+- **Timer limitations:** The empty-room delay is a configurable policy, not a persistent production timer.
+- **Recommendations:** The current recommendation engine is rule-based, not a trained AI model.
+
+The application is a prototype intended for demonstration and further development. Real-world deployment requires authorized camera access, appropriate hardware integration, testing, and privacy safeguards.
+
+## Future Enhancements
+
+- Integrate authorized live occupancy tracking.
+- Connect compatible IoT controllers for physical equipment automation.
+- Add actual energy-meter and light-sensor readings.
+- Store occupancy and energy history for analytics.
+- Develop predictive energy optimization.
+
+---
+
+**CLASSYWATT — Smarter Classrooms. Greener Futures. ⚡**
